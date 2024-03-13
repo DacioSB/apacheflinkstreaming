@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  jobmanager:
+    image: flink:latest
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 100
+        parallelism.default: 100
+    ports:
+      - "8081:8081"
+    expose:
+      - "6123"
+    command: jobmanager
+    
+
+  taskmanager:
+    image: flink:latest
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 100
+        parallelism.default: 100
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    expose:
+      - "6121"
+      - "6122"
+    deploy:
+          replicas: 5
